@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useReducer } from "react";
+import { quotesReducer } from "./lib/reducer";
 import AddQuotes from './components/AddQuotes'
 import ListQuotes from './components/ListQuotes'
 
 function App() {
-  const [quote, setQuote] = useState([{
+
+  const [quote, dispatch] = useReducer(quotesReducer, [{
     id: 1,
     likes: 5,
     title: "I am a Quote",
@@ -14,34 +16,25 @@ function App() {
   }
   ]);
   const handleQuote = (title) => {
-    const quote = {
-      title,
-      likes: 0,
-      id: crypto.randomUUID()
-    };
-    setQuote((prev) => [quote, ...prev]);
+    dispatch({ type: "add", payload: title });
   }
 
   const handleDelete = (id) => {
-    setQuote((prev) => prev.filter((quote) => quote.id !== id));
+    dispatch({ type: "delete", payload: id });
   }
 
 
   const handleLike = (id) => {
-    setQuote((prev) => prev.map((quote) => {
-      quote.id === id ? { ...quote, likes: quote.likes + 1 } : quote
-    }));
+    dispatch({ type: "like", payload: id });
   }
 
 
   const handleDislike = (id) => {
-    setQuote((prev) => prev.map((quote) => {
-      quote.id === id ? { ...quote, likes: quote.likes - 1 } : quote
-    }));
+    dispatch({ type: "dislike", payload: id });
   }
 
   const onSort = () => {
-    setQuote((prev) => prev.sort((a, b) => b.likes - a.likes));
+    dispatch({ type: "sort" });
   }
 
   return (
